@@ -8,13 +8,18 @@ app.use(cors())
 app.use(exporess.json())
 
 const authRoutes = require('./routes/authRoutes')
+const usersRoutes = require('./routes/usersRoutes')
 
 app.get('/', (req, res) => {
     res.send({ 'salom': 'Salom bro server yaxshi ishlayapdi' })
 })
 //ROUTES
-
 app.use('/api/auth', authRoutes)
+
+//USERS
+app.use('/api/users',usersRoutes)
+app.use('/api/users',usersRoutes)
+
 
 sequelize.sync({ force: false })
     .then(() => {

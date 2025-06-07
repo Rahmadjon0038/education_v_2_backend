@@ -24,7 +24,7 @@ const register = async (req, res) => {
             role
         });
 
-        res.status(201).json({ message: "Ro‘yxatdan o‘tish muvaffaqiyatli", userId: newUser.id });
+        res.status(201).json({ message: "Ro‘yxatdan o‘tish muvaffaqiyatli", userId: newUser.id, });
 
     } catch (error) {
         console.error(error);
@@ -34,6 +34,7 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     const { username, password } = req.body;
+    console.log(username, password)
     try {
         const user = await User.findOne({ where: { username } })
         if (!user) {
@@ -43,7 +44,8 @@ const login = async (req, res) => {
         if (!isMatch) return res.status(401).json({ error: 'Parol noto‘g‘ri' });
 
         const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.json({ message: 'Tizimga kirildi', token });
+
+        res.json({ message: 'Tizimga kirildi', token, id: user.id,role:user.role});
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Login xatosi' });
