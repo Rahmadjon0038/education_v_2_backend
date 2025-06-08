@@ -19,6 +19,8 @@ app.use('/api/auth', authRoutes)
 //USERS
 app.use('/api/users',usersRoutes)
 app.use('/api/users',usersRoutes)
+app.use('/uploads', exporess.static('uploads'));  // rasmlar uchun midlware
+
 
 
 sequelize.sync({ force: false })
