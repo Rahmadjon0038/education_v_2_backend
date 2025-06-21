@@ -1,19 +1,6 @@
+const cloudinary = require('../utils/cloudinary'); // cloudinary.js ichidagi config
 const sequelize = require('../config/db');
-const multer = require('multer');
-const path = require('path');
 
-// Multer sozlamalari
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/avatars/');
-  },
-  filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    cb(null, req.params.id + '-' + Date.now() + ext);
-  }
-});
-
-const upload = multer({ storage });
 
 // getUser funksiyasi (o'zgarmadi)
 const getUser = async (req, res) => {
@@ -44,53 +31,49 @@ const getUser = async (req, res) => {
     }
 };
 
-// updateUser funksiyasi - multer middleware bilan birga ishlash uchun funksiya ko‘rinishida
 const updateUser = async (req, res) => {
-    const { id } = req.params;
-    const { firstname, lastname, username } = req.body;
+  const { id } = req.params;
+  const { firstname, lastname, username } = req.body;
 
-    let updateFields = [];
-    let values = [];
+  let updateFields = [];
+  let values = [];
 
-    if (firstname && firstname.trim().length > 0) {
-        updateFields.push("firstname = ?");
-        values.push(firstname);
-    }
-    if (lastname && lastname.trim().length > 0) {
-        updateFields.push("lastname = ?");
-        values.push(lastname);
-    }
-    if (username && username.trim().length > 0) {
-        updateFields.push("username = ?");
-        values.push(username);
-    }
+  if (firstname) {
+    updateFields.push('firstname = ?');
+    values.push(firstname);
+  }  
 
-    if (req.file) {
-        updateFields.push("avatar = ?");
-        values.push(req.file.path); // yoki agar URL bo'lsa shu qiymat
-    }
+  if (lastname) {
+    updateFields.push('lastname = ?');
+    values.push(lastname);
+  }
 
-    if (updateFields.length === 0) {
-        return res.status(400).json({ message: "Hech qanday ma'lumot kiritilmadi" });
-    }
+  if (username) {
+    updateFields.push('username = ?');
+    values.push(username);
+  }
 
-    const query = `UPDATE users SET ${updateFields.join(', ')} WHERE id = ?`;
-    values.push(id);
+  if (req.file && req.file.path) {
+    updateFields.push('avatar = ?');
+    values.push(req.file.path); // Cloudinary'dan qaytgan secure_url avtomatik req.file.path sifatida keladi
+  }
 
-    try {
-        const [result] = await sequelize.query(query, {
-            replacements: values
-        });
+  if (updateFields.length === 0) {
+    return res.status(400).json({ message: "Hech narsa o‘zgartirilmadi" });
+  }
 
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ message: "Foydalanuvchi topilmadi" });
-        }
+  const query = `UPDATE users SET ${updateFields.join(', ')} WHERE id = ?`;
+  values.push(id);
 
-        res.status(200).json({ message: "Foydalanuvchi muvaffaqiyatli yangilandi" });
-    } catch (err) {
-        console.error("Xatolik:", err);
-        res.status(500).json({ message: "Server xatosi" });
-    }
+  try {
+    const [result] = await sequelize.query(query, {
+      replacements: values,
+    });
+
+    res.status(200).json({ message: 'Foydalanuvchi yangilandi' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Yangilashda xatolik' });
+  }
 };
-
-module.exports = { getUser, updateUser, upload };
+module.exports = { getUser, updateUser };
