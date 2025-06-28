@@ -13,13 +13,27 @@ const activeStudent = async (req, res) => {
             images: imageUrl
         });
 
-        res.status(201).json({ 
-            msg: "Ma'lumot muvaffaqiyatli qo‘shildi", 
-            data: newStudent 
+        res.status(201).json({
+            msg: "Ma'lumot muvaffaqiyatli qo‘shildi",
+            data: newStudent
         });
     } catch (err) {
         res.status(500).json({ error: 'Server xatosi!' });
     }
 };
 
-module.exports = { activeStudent };
+// GET - Barcha active studentlarni olish
+const getAllActiveStudents = async (req, res) => {
+    try {
+        const students = await ActiveStudent.findAll();
+        res.status(200).json(students);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Maʼlumotlarni olishda xatolik!' });
+    }
+};
+
+module.exports = {
+    activeStudent,
+    getAllActiveStudents
+};

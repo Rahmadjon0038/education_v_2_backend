@@ -24,6 +24,7 @@ app.use('/api/users',usersRoutes)
 
 //students
 app.use('/api/students',activeStudent)
+app.use('/api/students',activeStudent)
 
 
 // bu code modelga asoslanib bazada table yasaydi 
