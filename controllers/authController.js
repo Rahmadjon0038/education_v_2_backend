@@ -43,7 +43,7 @@ const login = async (req, res) => {
         const isMatch = await bycript.compare(password, user.password) //prolni tekshirish hash bilan
         if (!isMatch) return res.status(401).json({ error: 'Parol noto‘g‘ri' });
 
-        const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '12h' });
 
         res.json({ message: 'Tizimga kirildi', token, id: user.id,role:user.role});
     } catch (err) {
