@@ -22,6 +22,7 @@ const activeStudent = async (req, res) => {
     }
 };
 
+
 // GET - Barcha active studentlarni olish
 const getAllActiveStudents = async (req, res) => {
     try {
