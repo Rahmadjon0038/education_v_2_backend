@@ -20,11 +20,8 @@ app.use('/api/auth', authRoutes)
 
 //USERS
 app.use('/api/users',usersRoutes)
-app.use('/api/users',usersRoutes)
-app.use('/api/users',usersRoutes)
 
 //students
-app.use('/api/students',activeStudent)
 app.use('/api/students',activeStudent)
 
 

@@ -1,7 +1,6 @@
 const cloudinary = require('../utils/cloudinary'); // cloudinary.js ichidagi config
 const sequelize = require('../config/db');
 
-
 // getUser funksiyasi (o'zgarmadi)
 const getUser = async (req, res) => {
     try {
@@ -56,6 +55,8 @@ const updateUser = async (req, res) => {
   if (req.file && req.file.path) {
     updateFields.push('avatar = ?');
     values.push(req.file.path); // Cloudinary'dan qaytgan secure_url avtomatik req.file.path sifatida keladi
+    console.log('Fayl:', req.file);
+
   }
 
   if (updateFields.length === 0) {
